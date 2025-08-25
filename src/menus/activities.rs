@@ -753,6 +753,7 @@ fn edit_income(all_data: &mut AllActivities) {
 	}
 	let id_income = id_income_opt.unwrap();
 
+	println!("Enter new concepts.");
 	let concepts = io::read_from_tree_options(&all_data.get_income_concepts().get_tree());
 
 	let year_data = all_data.add_year(year);

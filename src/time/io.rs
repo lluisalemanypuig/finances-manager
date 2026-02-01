@@ -33,9 +33,9 @@
 use crate::io;
 use crate::time::date;
 
-pub fn read_correct_month() -> Option<date::Month> {
+pub fn read_month(header: &str) -> Option<date::Month> {
 	loop {
-		match io::read_string_or_empty() {
+		match io::read_string_or_empty(header) {
 			Some(str) => {
 				let month_res = str.parse::<date::Month>();
 				if let Ok(m) = month_res {

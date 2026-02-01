@@ -88,7 +88,7 @@ where
 	[print_by_type_incomes]  [get_income_concepts]  [print_incomes_by_func]  [Income];
 )]
 fn method(all_data: &AllActivities) {
-	let concepts = io::read_from_tree_options(&all_data.get().get_tree());
+	let concepts = io::read_from_tree_options("Concepts", &all_data.get().get_tree());
 	if concepts.len() == 0 {
 		return;
 	}
@@ -104,22 +104,22 @@ fn method(all_data: &AllActivities) {
 	[print_by_price_range_incomes]  [print_incomes_by_func]  [Income];
 )]
 fn method(all_data: &AllActivities) {
-	let lower: f32 = io::read_float();
-	let upper: f32 = io::read_float();
+	let lower: f32 = io::read_float("Lower limit");
+	let upper: f32 = io::read_float("Upper limit");
 
 	let func = |activity: &Activity| lower <= activity.price && activity.price <= upper;
 	display(all_data, &func);
 }
 
 fn print_by_place_expenses(all_data: &AllActivities, case_sensitive: bool, utf8_sensitive: bool) {
-	let place: String = io::read_string();
+	let place: String = io::read_string("Place");
 
 	let func =
 		|e: &Expense| utils::compare_strings(&e.shop, &place, case_sensitive, utf8_sensitive);
 	print_expenses_by_func(all_data, &func);
 }
 fn print_by_place_incomes(all_data: &AllActivities, case_sensitive: bool, utf8_sensitive: bool) {
-	let from: String = io::read_string();
+	let from: String = io::read_string("Place");
 
 	let func = |i: &Income| utils::compare_strings(&i.from, &from, case_sensitive, utf8_sensitive);
 	print_incomes_by_func(all_data, &func);
@@ -130,7 +130,7 @@ fn print_by_place_substring_expenses(
 	case_sensitive: bool,
 	utf8_sensitive: bool,
 ) {
-	let place: String = io::read_string();
+	let place: String = io::read_string("Place");
 
 	let func =
 		|e: &Expense| utils::string_contains(&place, &e.shop, case_sensitive, utf8_sensitive);
@@ -141,7 +141,7 @@ fn print_by_place_substring_incomes(
 	case_sensitive: bool,
 	utf8_sensitive: bool,
 ) {
-	let place: String = io::read_string();
+	let place: String = io::read_string("Place");
 
 	let func = |i: &Income| utils::string_contains(&place, &i.from, case_sensitive, utf8_sensitive);
 	print_incomes_by_func(all_data, &func);
@@ -211,8 +211,8 @@ fn method(all_data: &AllActivities) {
 	[print_year_user_incomes]  [print_data_year_incomes];
 )]
 fn method(all_data: &AllActivities) {
-	println!("What year do you want to see?");
-	let year: u32 = io::read_int();
+	println!("What year and month do you want to see?");
+	let year: u32 = io::read_int("Select year");
 
 	let res = all_data.get_year(&year);
 	if let Some(year) = res {
@@ -247,14 +247,14 @@ fn method(all_data: &AllActivities) {
 	[print_month_user_incomes]  [get_month_incomes]  [print_data_month_incomes];
 )]
 fn method(all_data: &AllActivities) {
-	println!("What year and month do you want to see? Year -> Month");
-	let year: u32 = io::read_int();
+	println!("What year and month do you want to see?");
+	let year: u32 = io::read_int("Select year");
 	if !all_data.has_year(&year) {
 		println!("Year '{year}' does not exist.");
 		return;
 	}
 
-	let month_opt = time::io::read_correct_month();
+	let month_opt = time::io::read_month("Select month:");
 	if month_opt.is_none() {
 		return;
 	}
@@ -279,7 +279,7 @@ fn method(all_data: &AllActivities) {
 
 	let year = local_date.year() as u32;
 
-	let month_opt = time::io::read_correct_month();
+	let month_opt = time::io::read_month("Select month:");
 	if month_opt.is_none() {
 		return;
 	}
@@ -327,8 +327,10 @@ fn add_new_with_date_expense(
 	month: time::date::Month,
 	day: u8,
 ) {
-	println!("Expense concepts:");
-	let expense_type = io::read_from_tree_options(all_data.get_expense_concepts().get_tree());
+	let expense_type = io::read_from_tree_options(
+		"Expense concepts",
+		all_data.get_expense_concepts().get_tree(),
+	);
 	if expense_type.len() == 0 {
 		return;
 	}
@@ -336,17 +338,10 @@ fn add_new_with_date_expense(
 	let year_data = all_data.add_year(year);
 	let month_data = year_data.get_expenses_mut().add(&month);
 
-	println!("Price:");
-	let price: f32 = io::read_float();
-
-	println!("Shop:");
-	let shop = io::read_string();
-
-	println!("City:");
-	let city = io::read_string();
-
-	println!("Description:");
-	let description = io::read_string_or_empty().unwrap_or("".to_string());
+	let price: f32 = io::read_float("Price");
+	let shop = io::read_string("Shop");
+	let city = io::read_string("City");
+	let description = io::read_string_or_empty("Description").unwrap_or("".to_string());
 
 	month_data.push(Expense {
 		day_of_year: time::date::Date { year, month, day },
@@ -364,8 +359,8 @@ fn add_new_with_date_income(
 	month: time::date::Month,
 	day: u8,
 ) {
-	println!("Income concepts:");
-	let income_concepts = io::read_from_tree_options(all_data.get_income_concepts().get_tree());
+	let income_concepts =
+		io::read_from_tree_options("Income concepts", all_data.get_income_concepts().get_tree());
 	if income_concepts.len() == 0 {
 		return;
 	}
@@ -373,17 +368,10 @@ fn add_new_with_date_income(
 	let year_data = all_data.add_year(year);
 	let month_data = year_data.get_incomes_mut().add(&month);
 
-	println!("Price:");
-	let price: f32 = io::read_float();
-
-	println!("From:");
-	let from = io::read_string();
-
-	println!("Place:");
-	let place = io::read_string();
-
-	println!("Description:");
-	let description = io::read_string_or_empty().unwrap_or("".to_string());
+	let price: f32 = io::read_float("Price");
+	let from = io::read_string("From");
+	let place = io::read_string("Place");
+	let description = io::read_string_or_empty("Description").unwrap_or("".to_string());
 
 	month_data.push(Income {
 		day_of_year: time::date::Date { year, month, day },
@@ -401,18 +389,15 @@ fn add_new_with_date_income(
 	[add_new_income]  [add_new_with_date_income];
 )]
 fn method(all_data: &mut AllActivities) {
-	println!("Year:");
-	let year: u32 = io::read_int();
+	let year: u32 = io::read_int("Year");
 
-	println!("Month:");
-	let month_opt = time::io::read_correct_month();
+	let month_opt = time::io::read_month("Select month:");
 	if month_opt.is_none() {
 		return;
 	}
 	let month = month_opt.unwrap();
 
-	println!("Day:");
-	let day: u8 = io::read_int();
+	let day: u8 = io::read_int("Day");
 
 	add(all_data, year, month, day);
 }
@@ -461,8 +446,7 @@ fn method(all_data: &mut AllActivities) {
 	}
 	let month = month_conv.expect("This should have worked!");
 
-	println!("Day:");
-	let day = io::read_int();
+	let day = io::read_int("Day");
 
 	add(all_data, year, month, day);
 }
@@ -478,15 +462,13 @@ fn method(all_data: &mut AllActivities) {
 
 	let year = local_date.year() as u32;
 
-	println!("Month:");
-	let month_opt = time::io::read_correct_month();
+	let month_opt = time::io::read_month("Select month:");
 	if month_opt.is_none() {
 		return;
 	}
 	let month = month_opt.unwrap();
 
-	println!("Day:");
-	let day = io::read_int();
+	let day = io::read_int("Day");
 
 	add(all_data, year, month, day);
 }
@@ -497,19 +479,16 @@ fn method(all_data: &mut AllActivities) {
 	[add_many_year_month_income]  [add_new_with_date_income];
 )]
 fn method(all_data: &mut AllActivities) {
-	println!("Year:");
-	let year: u32 = io::read_int();
+	let year: u32 = io::read_int("Year");
 
-	println!("Month:");
-	let month_opt = time::io::read_correct_month();
+	let month_opt = time::io::read_month("Select month:");
 	if month_opt.is_none() {
 		return;
 	}
 	let month = month_opt.unwrap();
 
 	loop {
-		println!("Day:");
-		match io::read_int_or_empty::<u8>() {
+		match io::read_int_or_empty::<u8>("Day") {
 			Some(day) => {
 				add(all_data, year, month.clone(), day);
 				println!("");
@@ -524,38 +503,26 @@ fn method(all_data: &mut AllActivities) {
 fn add_monthly_expense(all_data: &mut AllActivities) {
 	println!("Enter expense information first");
 
-	println!("Expense concepts:");
-	let concepts = io::read_from_tree_options(all_data.get_expense_concepts().get_tree());
+	let concepts = io::read_from_tree_options(
+		"Expense concepts",
+		all_data.get_expense_concepts().get_tree(),
+	);
 	if concepts.len() == 0 {
 		return;
 	}
 
-	println!("Price:");
-	let price: f32 = io::read_float();
+	let price: f32 = io::read_float("Price");
+	let shop = io::read_string("Shop");
+	let city = io::read_string("City");
+	let description = io::read_string_or_empty("Description").unwrap_or("".to_string());
 
-	println!("Shop:");
-	let shop = io::read_string();
+	let year_start: u32 = io::read_int("Start year");
+	let month_start = time::io::read_month("Start month:").unwrap();
 
-	println!("City:");
-	let city = io::read_string();
+	let year_end: u32 = io::read_int("End year");
+	let month_end = time::io::read_month("End month:").unwrap();
 
-	println!("Description:");
-	let description = io::read_string_or_empty().unwrap_or("".to_string());
-
-	println!("Start year:");
-	let year_start: u32 = io::read_int();
-
-	println!("Start month:");
-	let month_start = time::io::read_correct_month().unwrap();
-
-	println!("Finish year:");
-	let year_end: u32 = io::read_int();
-
-	println!("Finish month:");
-	let month_end = time::io::read_correct_month().unwrap();
-
-	println!("Day:");
-	let day: u8 = io::read_int();
+	let day: u8 = io::read_int("Day");
 
 	let start = time::date::YearMonth {
 		year: year_start,
@@ -584,38 +551,24 @@ fn add_monthly_expense(all_data: &mut AllActivities) {
 fn add_monthly_income(all_data: &mut AllActivities) {
 	println!("Enter income information first");
 
-	println!("Income Type:");
-	let concepts = io::read_from_tree_options(all_data.get_income_concepts().get_tree());
+	let concepts =
+		io::read_from_tree_options("Income Type", all_data.get_income_concepts().get_tree());
 	if concepts.len() == 0 {
 		return;
 	}
 
-	println!("Price:");
-	let price: f32 = io::read_float();
+	let price: f32 = io::read_float("Price");
+	let from = io::read_string("From");
+	let place = io::read_string("Place");
+	let description = io::read_string_or_empty("Description").unwrap_or("".to_string());
 
-	println!("From:");
-	let from = io::read_string();
+	let year_start: u32 = io::read_int("Start year");
+	let month_start = time::io::read_month("Start month:").unwrap();
 
-	println!("Place:");
-	let place = io::read_string();
+	let year_end: u32 = io::read_int("Finish year");
+	let month_end = time::io::read_month("End month:").unwrap();
 
-	println!("Description:");
-	let description = io::read_string_or_empty().unwrap_or("".to_string());
-
-	println!("Start year:");
-	let year_start: u32 = io::read_int();
-
-	println!("Start month:");
-	let month_start = time::io::read_correct_month().unwrap();
-
-	println!("Finish year:");
-	let year_end: u32 = io::read_int();
-
-	println!("Finish month:");
-	let month_end = time::io::read_correct_month().unwrap();
-
-	println!("Day:");
-	let day: u8 = io::read_int();
+	let day: u8 = io::read_int("Day");
 
 	let start = time::date::YearMonth {
 		year: year_start,
@@ -642,15 +595,13 @@ fn add_monthly_income(all_data: &mut AllActivities) {
 }
 
 fn edit_expense(all_data: &mut AllActivities) {
-	println!("Select year:");
-	let year: u32 = io::read_int();
+	let year: u32 = io::read_int("Select year");
 	if !all_data.has_year(&year) {
 		println!("Year '{year}' does not exist.");
 		return;
 	}
 
-	println!("Select month:");
-	let month_opt = time::io::read_correct_month();
+	let month_opt = time::io::read_month("Select month:");
 	if month_opt.is_none() {
 		return;
 	}
@@ -672,15 +623,16 @@ fn edit_expense(all_data: &mut AllActivities) {
 		menus::utils::display_and_accounting_expenses(month_data, &|_| true, 100);
 	}
 
-	println!("Id of expense to be edited.");
-	let id_expense_opt = io::read_int_or_empty::<usize>();
+	let id_expense_opt = io::read_int_or_empty::<usize>("Id of expense to be edited");
 	if id_expense_opt.is_none() {
 		return;
 	}
 	let id_expense = id_expense_opt.unwrap();
 
-	println!("Enter new concepts (leave blank to keep the value)");
-	let concepts = io::read_from_tree_options(&all_data.get_expense_concepts().get_tree());
+	let concepts = io::read_from_tree_options(
+		"Enter new concepts (leave blank to keep the value)",
+		&all_data.get_expense_concepts().get_tree(),
+	);
 
 	// year is ensured to exist above
 	let year_data = all_data.add_year(year);
@@ -691,40 +643,38 @@ fn edit_expense(all_data: &mut AllActivities) {
 		expense.concepts = concepts;
 	}
 
-	println!("Price: {} (leave blank to keep the value)", expense.price);
-	if let Some(price) = io::read_float_or_empty::<f32>() {
+	let header_1 = format!("Price: {} (leave blank to keep the value)", expense.price);
+	if let Some(price) = io::read_float_or_empty::<f32>(&header_1) {
 		expense.price = price;
 	}
 
-	println!("Shop: {} (leave blank to keep the value)", expense.shop);
-	if let Some(shop) = io::read_string_or_empty() {
+	let header_2 = format!("Shop: {} (leave blank to keep the value)", expense.shop);
+	if let Some(shop) = io::read_string_or_empty(&header_2) {
 		expense.shop = shop;
 	}
 
-	println!("City: {} (leave blank to keep the value)", expense.city);
-	if let Some(city) = io::read_string_or_empty() {
+	let header_3 = format!("City: {} (leave blank to keep the value)", expense.city);
+	if let Some(city) = io::read_string_or_empty(&header_3) {
 		expense.city = city;
 	}
 
-	println!(
+	let header_4 = format!(
 		"Description: {} (leave blank to keep the value)",
 		expense.description
 	);
-	if let Some(value) = io::read_string_or_empty() {
+	if let Some(value) = io::read_string_or_empty(&header_4) {
 		expense.description = value;
 	}
 }
 
 fn edit_income(all_data: &mut AllActivities) {
-	println!("Select year:");
-	let year: u32 = io::read_int();
+	let year: u32 = io::read_int("Select year");
 	if !all_data.has_year(&year) {
 		println!("Year '{year}' does not exist.");
 		return;
 	}
 
-	println!("Select month:");
-	let month_opt = time::io::read_correct_month();
+	let month_opt = time::io::read_month("Select month:");
 	if month_opt.is_none() {
 		return;
 	}
@@ -746,15 +696,16 @@ fn edit_income(all_data: &mut AllActivities) {
 		menus::utils::display_and_accounting_incomes(month_data, &|_| true, 100);
 	}
 
-	println!("Id of expense to be edited.");
-	let id_income_opt = io::read_int_or_empty::<usize>();
+	let id_income_opt = io::read_int_or_empty::<usize>("Id of expense to be edited");
 	if id_income_opt.is_none() {
 		return;
 	}
 	let id_income = id_income_opt.unwrap();
 
-	println!("Enter new concepts.");
-	let concepts = io::read_from_tree_options(&all_data.get_income_concepts().get_tree());
+	let concepts = io::read_from_tree_options(
+		"Enter new concepts",
+		&all_data.get_income_concepts().get_tree(),
+	);
 
 	let year_data = all_data.add_year(year);
 	let month_data = year_data.get_incomes_mut().add(&month);
@@ -764,26 +715,26 @@ fn edit_income(all_data: &mut AllActivities) {
 		income.concepts = concepts;
 	}
 
-	println!("Price: {} (leave blank to keep the value)", income.price);
-	if let Some(price) = io::read_float_or_empty::<f32>() {
+	let header_1 = format!("Price: {} (leave blank to keep the value)", income.price);
+	if let Some(price) = io::read_float_or_empty::<f32>(&header_1) {
 		income.price = price;
 	}
 
-	println!("From: {} (leave blank to keep the value)", income.from);
-	if let Some(from) = io::read_string_or_empty() {
+	let header_2 = format!("From: {} (leave blank to keep the value)", income.from);
+	if let Some(from) = io::read_string_or_empty(&header_2) {
 		income.from = from;
 	}
 
-	println!("Place: {} (leave blank to keep the value)", income.place);
-	if let Some(place) = io::read_string_or_empty() {
+	let header_3 = format!("Place: {} (leave blank to keep the value)", income.place);
+	if let Some(place) = io::read_string_or_empty(&header_3) {
 		income.place = place;
 	}
 
-	println!(
+	let header_4 = format!(
 		"Description: {} (leave blank to keep the value)",
 		income.description
 	);
-	if let Some(value) = io::read_string_or_empty() {
+	if let Some(value) = io::read_string_or_empty(&header_4) {
 		income.description = value;
 	}
 }
@@ -794,15 +745,13 @@ fn edit_income(all_data: &mut AllActivities) {
 	[remove_income]  [get_incomes]  [get_incomes_mut]  [display_and_accounting_incomes]  ["income"];
 )]
 fn method(all_data: &mut AllActivities) {
-	println!("Select year:");
-	let year: u32 = io::read_int();
+	let year: u32 = io::read_int("Select year");
 	if !all_data.has_year(&year) {
 		println!("Year '{year}' does not exist.");
 		return;
 	}
 
-	println!("Select month:");
-	let month_opt = time::io::read_correct_month();
+	let month_opt = time::io::read_month("Select month:");
 	if month_opt.is_none() {
 		return;
 	}
@@ -819,8 +768,8 @@ fn method(all_data: &mut AllActivities) {
 		menus::utils::display(month_data, &|_| true, 2);
 	}
 
-	println!("Id of {} to be deleted.", thing);
-	if let Some(id_expense) = io::read_int_or_empty::<usize>() {
+	let header = format!("Id of {} to be deleted", thing);
+	if let Some(id_expense) = io::read_int_or_empty::<usize>(&header) {
 		let year_data = all_data.add_year(year);
 		let month_data = year_data.get_mut().add(&month);
 
@@ -863,6 +812,7 @@ fn method() {
 	println!("    23. Edit an {}", thing);
 	println!("    24. Remove an {}", thing);
 	println!("     0. Leave");
+	println!("");
 }
 
 pub fn menu_expenses(all_data: &mut AllActivities) {
@@ -870,7 +820,7 @@ pub fn menu_expenses(all_data: &mut AllActivities) {
 	let min_option = 0;
 	let max_option = 24;
 
-	let mut option = menus::utils::read_option(print_function, min_option, max_option);
+	let mut option = menus::utils::read_option("Option", print_function, min_option, max_option);
 	while option != 0 {
 		match option {
 			1 => print_all_expenses(&all_data),
@@ -900,7 +850,7 @@ pub fn menu_expenses(all_data: &mut AllActivities) {
 			_ => println!("Nothing to do..."),
 		}
 
-		option = menus::utils::read_option(print_function, min_option, max_option);
+		option = menus::utils::read_option("Option", print_function, min_option, max_option);
 	}
 }
 
@@ -909,7 +859,7 @@ pub fn menu_incomes(all_data: &mut AllActivities) {
 	let min_option = 0;
 	let max_option = 24;
 
-	let mut option = menus::utils::read_option(print_function, min_option, max_option);
+	let mut option = menus::utils::read_option("Option", print_function, min_option, max_option);
 	while option != 0 {
 		match option {
 			1 => print_all_incomes(&all_data),
@@ -939,6 +889,6 @@ pub fn menu_incomes(all_data: &mut AllActivities) {
 			_ => println!("Nothing to do..."),
 		}
 
-		option = menus::utils::read_option(print_function, min_option, max_option);
+		option = menus::utils::read_option("Option", print_function, min_option, max_option);
 	}
 }

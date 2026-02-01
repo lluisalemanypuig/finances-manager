@@ -57,6 +57,7 @@ fn print_main_menu() {
 	println!("    7. Save changes");
 	println!("    8. Force data overwrite");
 	println!("    0. Leave");
+	println!("");
 }
 
 fn main_menu(all_data: &mut AllActivities, data_dir: &String) {
@@ -64,7 +65,7 @@ fn main_menu(all_data: &mut AllActivities, data_dir: &String) {
 	let min_option = 0;
 	let max_option = 8;
 
-	let mut option = menus::utils::read_option(print_function, min_option, max_option);
+	let mut option = menus::utils::read_option("Option", print_function, min_option, max_option);
 	while option != 0 {
 		match option {
 			1 => menus::activities::menu_expenses(all_data),
@@ -91,7 +92,7 @@ fn main_menu(all_data: &mut AllActivities, data_dir: &String) {
 			_ => println!("Nothing to do..."),
 		}
 
-		option = menus::utils::read_option(print_function, min_option, max_option);
+		option = menus::utils::read_option("Option", print_function, min_option, max_option);
 	}
 
 	println!("Goodbye!");

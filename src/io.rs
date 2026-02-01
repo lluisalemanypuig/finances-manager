@@ -31,10 +31,15 @@
  ********************************************************************/
 
 use std::str::FromStr;
+use std::io::Write;
 
 use crate::concepts::tree::Tree;
 
-pub fn read_input_string() -> String {
+pub fn read_input_string(header: &str) -> String {
+	if header != "" {
+		print!("{}: ", header);
+		let _ = std::io::stdout().flush().unwrap();
+	}
 	let mut s = String::new();
 	let stdin = std::io::stdin();
 	stdin
@@ -43,17 +48,17 @@ pub fn read_input_string() -> String {
 	s.trim().to_string()
 }
 
-pub fn read_string_or_empty() -> Option<String> {
-	let str = read_input_string();
+pub fn read_string_or_empty(header: &str) -> Option<String> {
+	let str = read_input_string(header);
 	if str == "".to_string() {
 		return None;
 	}
 	Some(str)
 }
 
-pub fn read_string() -> String {
+pub fn read_string(header: &str) -> String {
 	loop {
-		if let Some(str) = read_string_or_empty() {
+		if let Some(str) = read_string_or_empty(header) {
 			break str;
 		}
 	}
@@ -72,12 +77,12 @@ impl Numeric for usize {}
 impl Numeric for f32 {}
 impl Numeric for f64 {}
 
-pub fn read_num_or_empty<T>() -> Option<T>
+pub fn read_num_or_empty<T>(header: &str) -> Option<T>
 where
 	T: Numeric,
 {
 	loop {
-		if let Some(str) = read_string_or_empty() {
+		if let Some(str) = read_string_or_empty(header) {
 			if let Ok(value) = str.parse::<T>() {
 				break Some(value);
 			}
@@ -87,12 +92,12 @@ where
 	}
 }
 
-pub fn read_num<T: FromStr>() -> T
+pub fn read_num<T: FromStr>(header: &str) -> T
 where
 	T: Numeric,
 {
 	loop {
-		if let Ok(value) = read_string().parse::<T>() {
+		if let Ok(value) = read_string(header).parse::<T>() {
 			return value;
 		}
 	}
@@ -105,43 +110,43 @@ impl Integral for u32 {}
 impl Integral for u64 {}
 impl Integral for usize {}
 
-pub fn read_int_or_empty<T: FromStr>() -> Option<T>
+pub fn read_int_or_empty<T: FromStr>(s: &str) -> Option<T>
 where
 	T: Integral,
 {
-	read_num_or_empty::<T>()
+	read_num_or_empty::<T>(s)
 }
 
-pub fn read_int<T: FromStr>() -> T
+pub fn read_int<T: FromStr>(s: &str) -> T
 where
 	T: Integral,
 {
-	read_num::<T>()
+	read_num::<T>(s)
 }
 
 pub trait Decimal: Numeric {}
 impl Decimal for f32 {}
 impl Decimal for f64 {}
 
-pub fn read_float_or_empty<T: FromStr>() -> Option<T>
+pub fn read_float_or_empty<T: FromStr>(s: &str) -> Option<T>
 where
 	T: Decimal,
 {
-	read_num_or_empty::<T>()
+	read_num_or_empty::<T>(s)
 }
 
-pub fn read_float<T: FromStr>() -> T
+pub fn read_float<T: FromStr>(s: &str) -> T
 where
 	T: Decimal,
 {
-	read_num::<T>()
+	read_num::<T>(s)
 }
 
 /* ------------------------------------------------------------------------- */
 
-pub fn read_from_options_or_empty(options: &Vec<String>) -> Option<String> {
+pub fn read_from_options_or_empty(header: &str, options: &Vec<String>) -> Option<String> {
 	loop {
-		if let Some(str) = read_string_or_empty() {
+		if let Some(str) = read_string_or_empty(header) {
 			if str == "?".to_string() {
 				for opt in options.iter() {
 					println!("    {opt}");
@@ -156,18 +161,18 @@ pub fn read_from_options_or_empty(options: &Vec<String>) -> Option<String> {
 	}
 }
 
-pub fn read_from_tree_options(options: &Tree) -> Vec<String> {
+pub fn read_from_tree_options(header: &str, options: &Tree) -> Vec<String> {
 	let mut res: Vec<String> = Vec::new();
 
 	let available = options.get_keys().iter().map(|s| s.to_string()).collect();
-	let opt = read_from_options_or_empty(&available);
+	let opt = read_from_options_or_empty(header, &available);
 
 	if let Some(s) = opt {
 		let st = options.get_child(&s);
 		res.push(s);
 
 		if let Some(stt) = st {
-			let mut more = read_from_tree_options(&stt);
+			let mut more = read_from_tree_options(header, &stt);
 			res.append(&mut more);
 		}
 	}

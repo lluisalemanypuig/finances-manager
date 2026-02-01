@@ -171,23 +171,20 @@ pub fn menu_expenses(all_data: &AllActivities) {
 	let min_option = 0;
 	let max_option = 9;
 
-	let mut option = utils::read_option(print_function, min_option, max_option);
+	let mut option = utils::read_option("Option", print_function, min_option, max_option);
 	while option != 0 {
 		match option {
 			// by type
 			1 => {
-				println!("How many types?");
-				let num_types = io::read_int();
+				let num_types = io::read_int("Number of types");
 				history_expenses_concepts(&all_data, sort_by_concept, |e| concept(num_types, e));
 			},
 			2 => {
-				println!("How many types?");
-				let num_types = io::read_int();
+				let num_types = io::read_int("Number of types");
 				history_expenses_concepts(&all_data, sort_by_times, |e| concept(num_types, e));
 			},
 			3 => {
-				println!("How many types?");
-				let num_types = io::read_int();
+				let num_types = io::read_int("Number of types");
 				history_expenses_concepts(&all_data, sort_by_value, |e| concept(num_types, e));
 			},
 
@@ -200,7 +197,7 @@ pub fn menu_expenses(all_data: &AllActivities) {
 			_ => println!("Nothing to do..."),
 		}
 
-		option = utils::read_option(print_function, min_option, max_option);
+		option = utils::read_option("Options", print_function, min_option, max_option);
 	}
 }
 
@@ -289,23 +286,20 @@ pub fn menu_incomes(all_data: &AllActivities) {
 	let min_option = 0;
 	let max_option = 15;
 
-	let mut option = utils::read_option(print_function, min_option, max_option);
+	let mut option = utils::read_option("Option", print_function, min_option, max_option);
 	while option != 0 {
 		match option {
 			// by type
 			1 => {
-				println!("How many types?");
-				let num_types = io::read_int();
+				let num_types = io::read_int("Number of types");
 				history_incomes_concepts(&all_data, sort_by_concept, |e| concept(num_types, e));
 			},
 			2 => {
-				println!("How many types?");
-				let num_types = io::read_int();
+				let num_types = io::read_int("Number of types");
 				history_incomes_concepts(&all_data, sort_by_times, |e| concept(num_types, e));
 			},
 			3 => {
-				println!("How many types?");
-				let num_types = io::read_int();
+				let num_types = io::read_int("Number of types");
 				history_incomes_concepts(&all_data, sort_by_value, |e| concept(num_types, e));
 			},
 
@@ -373,6 +367,6 @@ pub fn menu_incomes(all_data: &AllActivities) {
 			_ => println!("Nothing to do..."),
 		}
 
-		option = utils::read_option(print_function, min_option, max_option);
+		option = utils::read_option("Option", print_function, min_option, max_option);
 	}
 }

@@ -55,13 +55,13 @@ fn method(all_data: &AllExpenses) {
 )]
 fn method(all_data: &mut AllExpenses) {
 	println!("Select the branch of concepts:");
-	let branch = io::read_from_tree_options(&all_data.get_concepts().get_tree());
+	let branch = io::read_from_tree_options("", &all_data.get_concepts().get_tree());
 	if branch.len() == 0 {
 		return;
 	}
 
-	println!("Enter the new {} concept:", thing);
-	let new_concept = io::read_string();
+	let header = format!("Enter the new {} concept", thing);
+	let new_concept = io::read_string(&header);
 
 	all_data
 		.get_concepts_mut()
@@ -77,13 +77,13 @@ fn method(all_data: &mut AllExpenses) {
 )]
 fn method(all_data: &mut AllExpenses) {
 	println!("Select the branch of concepts (the last entered will be renamed):");
-	let branch = io::read_from_tree_options(&all_data.get_concepts().get_tree());
+	let branch = io::read_from_tree_options("", &all_data.get_concepts().get_tree());
 	if branch.len() == 0 {
 		return;
 	}
 
-	println!("Enter the new {} concept:", thing);
-	let new_concept = io::read_string();
+	let header = format!("Enter the new {} concept", thing);
+	let new_concept = io::read_string(&header);
 
 	let tree = all_data.get_concepts_mut().get_tree_mut();
 
@@ -113,7 +113,7 @@ fn method(all_data: &mut AllExpenses) {
 )]
 fn method(all_data: &mut AllExpenses) {
 	println!("Select the branch of concepts (the last entered will be removed):");
-	let branch = io::read_from_tree_options(&all_data.get_concepts().get_tree());
+	let branch = io::read_from_tree_options("", &all_data.get_concepts().get_tree());
 	if branch.len() == 0 {
 		return;
 	}
@@ -145,7 +145,7 @@ pub fn menu_expense_concepts(all_data: &mut AllExpenses) {
 	let min_option = 0;
 	let max_option = 7;
 
-	let mut option = menus::utils::read_option(print_function, min_option, max_option);
+	let mut option = menus::utils::read_option("Option", print_function, min_option, max_option);
 	while option != 0 {
 		match option {
 			1 => print_expense_concepts_all(&all_data),
@@ -155,7 +155,7 @@ pub fn menu_expense_concepts(all_data: &mut AllExpenses) {
 			_ => println!("Nothing to do..."),
 		}
 
-		option = menus::utils::read_option(print_function, min_option, max_option);
+		option = menus::utils::read_option("Option", print_function, min_option, max_option);
 	}
 }
 
@@ -164,7 +164,7 @@ pub fn menu_income_concepts(all_data: &mut AllExpenses) {
 	let min_option = 0;
 	let max_option = 7;
 
-	let mut option = menus::utils::read_option(print_function, min_option, max_option);
+	let mut option = menus::utils::read_option("Option", print_function, min_option, max_option);
 	while option != 0 {
 		match option {
 			1 => print_income_concepts_all(&all_data),
@@ -174,6 +174,6 @@ pub fn menu_income_concepts(all_data: &mut AllExpenses) {
 			_ => println!("Nothing to do..."),
 		}
 
-		option = menus::utils::read_option(print_function, min_option, max_option);
+		option = menus::utils::read_option("Option", print_function, min_option, max_option);
 	}
 }

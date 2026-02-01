@@ -57,10 +57,10 @@ static DATE_WIDTH: usize = 17;
 static PERCENTAGE_WIDTH: usize = 10;
 static CONCEPT_SEPARATOR: &str = " ; ";
 
-pub fn read_option<F: Fn()>(f: F, min_valid: u32, max_valid: u32) -> u32 {
+pub fn read_option<F: Fn()>(header: &str, f: F, min_valid: u32, max_valid: u32) -> u32 {
 	loop {
 		f();
-		let option = io::read_int();
+		let option = io::read_int(header);
 		if min_valid <= option && option <= max_valid {
 			break option;
 		}

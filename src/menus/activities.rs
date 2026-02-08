@@ -254,7 +254,7 @@ fn method(all_data: &AllActivities) {
 		return;
 	}
 
-	let month_opt = time::io::read_month("Select month:");
+	let month_opt = time::io::read_month("Select month");
 	if month_opt.is_none() {
 		return;
 	}
@@ -279,7 +279,7 @@ fn method(all_data: &AllActivities) {
 
 	let year = local_date.year() as u32;
 
-	let month_opt = time::io::read_month("Select month:");
+	let month_opt = time::io::read_month("Select month");
 	if month_opt.is_none() {
 		return;
 	}
@@ -391,7 +391,7 @@ fn add_new_with_date_income(
 fn method(all_data: &mut AllActivities) {
 	let year: u32 = io::read_int("Year");
 
-	let month_opt = time::io::read_month("Select month:");
+	let month_opt = time::io::read_month("Select month");
 	if month_opt.is_none() {
 		return;
 	}
@@ -462,7 +462,7 @@ fn method(all_data: &mut AllActivities) {
 
 	let year = local_date.year() as u32;
 
-	let month_opt = time::io::read_month("Select month:");
+	let month_opt = time::io::read_month("Select month");
 	if month_opt.is_none() {
 		return;
 	}
@@ -481,7 +481,7 @@ fn method(all_data: &mut AllActivities) {
 fn method(all_data: &mut AllActivities) {
 	let year: u32 = io::read_int("Year");
 
-	let month_opt = time::io::read_month("Select month:");
+	let month_opt = time::io::read_month("Select month");
 	if month_opt.is_none() {
 		return;
 	}
@@ -517,10 +517,10 @@ fn add_monthly_expense(all_data: &mut AllActivities) {
 	let description = io::read_string_or_empty("Description").unwrap_or("".to_string());
 
 	let year_start: u32 = io::read_int("Start year");
-	let month_start = time::io::read_month("Start month:").unwrap();
+	let month_start = time::io::read_month("Start month").unwrap();
 
 	let year_end: u32 = io::read_int("End year");
-	let month_end = time::io::read_month("End month:").unwrap();
+	let month_end = time::io::read_month("End month").unwrap();
 
 	let day: u8 = io::read_int("Day");
 
@@ -563,10 +563,10 @@ fn add_monthly_income(all_data: &mut AllActivities) {
 	let description = io::read_string_or_empty("Description").unwrap_or("".to_string());
 
 	let year_start: u32 = io::read_int("Start year");
-	let month_start = time::io::read_month("Start month:").unwrap();
+	let month_start = time::io::read_month("Start month").unwrap();
 
 	let year_end: u32 = io::read_int("Finish year");
-	let month_end = time::io::read_month("End month:").unwrap();
+	let month_end = time::io::read_month("End month").unwrap();
 
 	let day: u8 = io::read_int("Day");
 
@@ -601,7 +601,7 @@ fn edit_expense(all_data: &mut AllActivities) {
 		return;
 	}
 
-	let month_opt = time::io::read_month("Select month:");
+	let month_opt = time::io::read_month("Select month");
 	if month_opt.is_none() {
 		return;
 	}
@@ -643,23 +643,23 @@ fn edit_expense(all_data: &mut AllActivities) {
 		expense.concepts = concepts;
 	}
 
-	let header_1 = format!("Price: {} (leave blank to keep the value)", expense.price);
+	let header_1 = format!("Price: '{}' (leave blank to keep the value)", expense.price);
 	if let Some(price) = io::read_float_or_empty::<f32>(&header_1) {
 		expense.price = price;
 	}
 
-	let header_2 = format!("Shop: {} (leave blank to keep the value)", expense.shop);
+	let header_2 = format!("Shop: '{}' (leave blank to keep the value)", expense.shop);
 	if let Some(shop) = io::read_string_or_empty(&header_2) {
 		expense.shop = shop;
 	}
 
-	let header_3 = format!("City: {} (leave blank to keep the value)", expense.city);
+	let header_3 = format!("City: '{}' (leave blank to keep the value)", expense.city);
 	if let Some(city) = io::read_string_or_empty(&header_3) {
 		expense.city = city;
 	}
 
 	let header_4 = format!(
-		"Description: {} (leave blank to keep the value)",
+		"Description: '{}' (leave blank to keep the value)",
 		expense.description
 	);
 	if let Some(value) = io::read_string_or_empty(&header_4) {
@@ -674,7 +674,7 @@ fn edit_income(all_data: &mut AllActivities) {
 		return;
 	}
 
-	let month_opt = time::io::read_month("Select month:");
+	let month_opt = time::io::read_month("Select month");
 	if month_opt.is_none() {
 		return;
 	}
@@ -751,7 +751,7 @@ fn method(all_data: &mut AllActivities) {
 		return;
 	}
 
-	let month_opt = time::io::read_month("Select month:");
+	let month_opt = time::io::read_month("Select month");
 	if month_opt.is_none() {
 		return;
 	}

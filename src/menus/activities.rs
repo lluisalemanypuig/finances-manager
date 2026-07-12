@@ -783,7 +783,7 @@ fn method(all_data: &mut AllActivities) {
 	[print_menu_income]   ["income"]  ["from"];
 )]
 fn method() {
-	println!("Query and edit the expenses:");
+	println!("Query and edit the {}s:", thing);
 	println!("");
 	println!("     1. Show all current data");
 	println!("     2. Show data of a year");
